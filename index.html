@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Truth or Drink - Chơi thôi!</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    #card {
+      background: #292942;
+      padding: 30px;
+      border-radius: 20px;
+      font-size: 24px;
+      width: 80%;
+      max-width: 600px;
+      min-height: 150px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      transition: 0.3s;
+    }
+
+    #card.strong { background: #8e24aa; }
+    #card.medium { background: #e65100; }
+    #card.light { background: #1e88e5; }
+
+    button {
+      margin-top: 30px;
+      padding: 15px 40px;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #ff4081;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #f50057;
+    }
+
+    .note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍻 Truth or Drink</h1>
+  <div id="card">Nhấn nút để bốc câu hỏi "Thật hay Phạt"</div>
+  <button onclick="drawCard()">Bốc câu hỏi</button>
+  <div class="note">Nếu không trả lời được, hãy uống theo số ly quy định! 😏</div>
+
+  <script>
+    const questions = [
+      { text: "Lần gần nhất bạn xem nội dung người lớn là khi nào?", level: 1 },
+      { text: "Bạn đã từng 'chơi xa' ở nơi công cộng chưa?", level: 2 },
+      { text: "Ai trong nhóm này bạn nghĩ giỏi chuyện chăn gối nhất?", level: 1 },
+      { text: "Bạn từng giả vờ đạt cực khoái chưa?", level: 2 },
+      { text: "Bạn có từng 'thử' chuyện đó ở chỗ nào nguy hiểm chưa?", level: 3 },
+      { text: "Gửi tin nhắn gạ gẫm gần nhất của bạn là cho ai?", level: 2 },
+      { text: "Miêu tả lần đầu tiên của bạn bằng 3 từ.", level: 1 },
+      { text: "Bạn đã từng sex chưa? Nói chi tiết hoặc uống 3 ly.", level: 3 },
+      { text: "Bạn đã từng thích người yêu của bạn thân chưa?", level: 2 },
+      { text: "Cơ thể bạn phần nào là sexy nhất? Khoe nếu muốn tránh uống.", level: 1 },
+      { text: "Bạn đã từng 'đụng chạm' ai khi họ ngủ chưa?", level: 3 },
+      { text: "Món đồ chơi người lớn bạn muốn thử là gì?", level: 2 },
+      { text: "Kể tên một bí mật bạn chưa từng nói với ai.", level: 3 },
+      { text: "Bạn nghĩ bao nhiêu là 'vừa đủ' khi quan hệ?", level: 2 },
+      { text: "Lần cuối bạn thủ dâm là khi nào?", level: 1 },
+      { text: "Bạn có đang 'friend with benefits' với ai không?", level: 2 },
+      { text: "Gửi icon 🍑 hoặc 🍆 cho người bên trái bạn.", level: 1 },
+      { text: "Bạn đã từng xem phim 18+ cùng ai đó chưa?", level: 2 },
+      { text: "Bạn có thể đi bao lâu nếu yêu xa không sex?", level: 2 },
+      { text: "Bạn có từng yêu ai chỉ vì ngoại hình?", level: 1 },
+      { text: "Gọi cho người yêu cũ và nói 'Anh vẫn nhớ em'.", level: 3 },
+      { text: "Đọc to 1 tin nhắn thả thính gần nhất bạn nhận được.", level: 1 },
+      { text: "Bạn đã từng hôn người đồng giới chưa?", level: 2 },
+      { text: "Gửi một tin nhắn 'Mình thích cậu' cho người bất kỳ trong danh bạ.", level: 3 },
+      { text: "Bạn từng tán tỉnh ai rồi hối hận không?", level: 1 },
+      { text: "Từng có tình 1 đêm chưa?", level: 2 },
+      { text: "Ai là người khiến bạn 'rạo rực' gần đây nhất?", level: 1 },
+      { text: "Bạn có đang giấu ai một mối quan hệ mờ ám?", level: 3 },
+      { text: "Bạn có từng bị phát hiện khi đang 'làm chuyện ấy' không?", level: 3 },
+      { text: "Kể lần bạn bị từ chối tệ hại nhất trong tình yêu.", level: 2 },
+      { text: "Bạn nghĩ sao về tình một đêm?", level: 1 },
+      { text: "Bạn nghĩ ai trong nhóm sẽ cưới muộn nhất?", level: 1 },
+      { text: "Bạn từng yêu cùng lúc 2 người chưa?", level: 3 },
+      { text: "Ai trong nhóm có gu 'dâm' giống bạn nhất?", level: 2 },
+      { text: "Bạn từng gửi ảnh sexy cho ai chưa?", level: 2 },
+      { text: "Bạn đang độc thân vì lý do gì?", level: 1 },
+      { text: "Bạn có đang thích ai trong nhóm không? Ai?", level: 3 },
+      { text: "Bạn từng giả vờ say để làm gì?", level: 1 },
+      { text: "Bạn từng làm chuyện ấy trong phòng tắm chưa?", level: 2 },
+      { text: "Bạn đã từng ngoại tình trong suy nghĩ chưa?", level: 2 },
+      { text: "Bạn có cảm xúc thật khi say không?", level: 1 },
+      { text: "Bạn đã từng bị 'quê' khi tỏ tình chưa?", level: 1 },
+      { text: "Kể tên 1 người bạn muốn hôn lúc này.", level: 2 },
+      { text: "Bạn từng sex vì thương hại chưa?", level: 3 },
+      { text: "Bạn từng 'tự sướng' bao nhiêu lần 1 tuần?", level: 2 },
+      { text: "Bạn đã từng hối hận sau khi quan hệ chưa?", level: 2 },
+      { text: "Bạn từng giả vờ yêu ai chưa?", level: 3 },
+      { text: "Gọi video call cho người bất kỳ và nói 'Tối nay ngủ cùng nhé?'", level: 3 },
+      { text: "Từng 'xem' khi còn học cấp 2/cấp 3 không?", level: 2 },
+      { text: "Bạn đang nghĩ gì 18+ lúc này?", level: 1 },
+    ];
+
+    function drawCard() {
+      const random = questions[Math.floor(Math.random() * questions.length)];
+      const card = document.getElementById("card");
+      card.textContent = random.text;
+      card.className = '';
+      if (random.level === 3) {
+        card.classList.add("strong");
+      } else if (random.level === 2) {
+        card.classList.add("medium");
+      } else {
+        card.classList.add("light");
+      }
+    }
+  </script>
+</body>
+</html>
